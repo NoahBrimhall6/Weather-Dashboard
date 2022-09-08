@@ -1,0 +1,53 @@
+html {
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+header {
+  margin: 10px;
+  padding: 10px;
+  background-color: blue;
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+}
+
+h1{
+  font-size: 300%;
+}
+
+/* Main */
+main {
+  display: flex;
+}
+
+/* Aside */
+aside {
+  flex: 1;
+  margin: 10px;
+}
+
+/* Main Section */
+section {
+  flex-grow: 2;
+  margin: 10px;
+}
+
+/* Footer */
+footer {
+  margin: 10px;
+  padding: 10px;
+  background-color: blue;
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+}
+
+h3 {
+  font-size: 150%;
+}
