@@ -5,6 +5,7 @@ var jumbotron = document.querySelector("#jumbotron");
 var cards =  document.querySelector("#cards");
 
 const apiKey = "95112ca064f77491ff012ecebc538edb";
+var storedCities = [];
 
 function geocodingApiCall (city) {
   return `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
@@ -30,6 +31,31 @@ function apiCall (city) {
     });
 }
 
+function weatherIcon (weather) {
+  switch (weather) {
+    case "Thunderstorm":
+      return "⛈️";
+      break;
+    case "Drizzle":
+      return "🌦️";
+      break;
+    case "Rain":
+      return "🌧️";
+      break;
+    case "Snow":
+      return "🌨️";
+      break;
+    case "Clear":
+      return "☀️";
+      break;
+    case "Clouds":
+      return "⛅";
+      break;
+    default:
+      return "🌤️";
+  }
+}
+
 function renderForecast (data) {
   console.log(data);
 
@@ -42,7 +68,7 @@ function renderForecast (data) {
   var wind = document.createElement("span");
   var hum = document.createElement("span");
 
-  cityTemp.textContent = `${data.city.name} - ${moment.unix(today.dt).format("MMM Do, YYYY")}`;
+  cityTemp.textContent = `${data.city.name} - ${moment.unix(today.dt).format("MMM Do, YYYY")} ${weatherIcon(today.weather[0].main)}`;
   temp.textContent = `Temprature: ${today.main.temp_max}°F`;
   wind.textContent = `Wind: ${today.wind.speed} MPH`;
   hum.textContent = `Humidity: ${today.main.humidity}%`;
@@ -64,7 +90,7 @@ function renderForecast (data) {
     let wind = document.createElement("span");
     let hum = document.createElement("span");
 
-    date.textContent = moment.unix(day.dt).format("MMM Do");
+    date.textContent = moment.unix(day.dt).format("MMM Do") + " " + weatherIcon(day.weather[0].main);
     temp.textContent = `Temp: ${day.main.temp_max}°F`;
     wind.textContent = `Wind: ${day.wind.speed} MPH`;
     hum.textContent = `Humidity: ${day.main.humidity}%`;
@@ -77,6 +103,23 @@ function renderForecast (data) {
   }
 }
 
+//Local Storage
+function store (city) {
+  storedCities.push(city);
+  localStorage.setItem("storedCities", JSON.stringify(storedCities));
+  renderCities();
+}
+
+function renderCities() {
+  listEl.innerHTML = "";
+
+  for (let i = 0; i < storedCities.length; i++) {
+    var li = document.createElement("li");
+    li.textContent = storedCities[i];
+    listEl.appendChild(li);
+  }
+}
+
 //Search Button Event Listener
 searchBtn.addEventListener("click", function(event) {
   event.preventDefault();
@@ -85,11 +128,9 @@ searchBtn.addEventListener("click", function(event) {
 
   if (input) {
     console.log(input);
-    var li = document.createElement("li");
-    li.textContent = input;
-    listEl.appendChild(li);
-
+    store(input);
     apiCall(input);
+    searchInput.value = "";
   } else {
     console.log("Please enter a valid city name");
   }
@@ -103,3 +144,11 @@ listEl.addEventListener("click", function(event) {
     apiCall(city);
   }
 });
+
+if (localStorage.getItem("storedCities")) {
+  console.log("Returned True");
+  storedCities = JSON.parse(localStorage.getItem("storedCities"));
+  renderCities();
+} else {
+  console.log("Returned False");
+}
