@@ -94,3 +94,12 @@ searchBtn.addEventListener("click", function(event) {
     console.log("Please enter a valid city name");
   }
 });
+
+//Saved City event listener
+
+listEl.addEventListener("click", function(event) {
+  if (event.target.constructor.name === "HTMLLIElement"){
+    var city = event.target.textContent;
+    apiCall(city);
+  }
+});
